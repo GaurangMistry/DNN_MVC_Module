@@ -1,0 +1,18 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<WebXMS.DAL.ASLApp.Models.ASLCategory>
+
+<div>
+    <div>
+        @*@Html.ValidationSummary(true)*@
+        <div>
+            <label>@Dnn.LocalizeString("Category")*</label>
+            @Html.TextBoxFor(m => m.CategoryName)
+            @Html.ValidationMessageFor(m => m.CategoryName, @Dnn.LocalizeString("CategoryRequired"))
+
+        </div
+        <div class="buttons">
+            <button type="submit" id="btnSave" class="dnnPrimaryAction">@Dnn.LocalizeString("Save")</button>
+        </div>
+    </div>
+</div>

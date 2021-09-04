@@ -1,0 +1,20 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<WebXMS.DAL.ASLApp.Models.ASLReEvaluation>
+
+<div>
+    <div>
+        @*@Html.ValidationSummary(true)*@
+        <div>
+            <label>@Dnn.LocalizeString("AreYouSureDelete.Text")</label>
+            @Html.HiddenFor(m => m.ASLReEvaluationId)
+            @Html.HiddenFor(m => m.PortalId)
+            @Html.HiddenFor(m => m.ParentASLId)
+            @Html.HiddenFor(m => m.EvaluationDate)
+
+        </div>
+        <div class="buttons">
+            <button type="submit" id="btnSave" class="dnnPrimaryAction">@Dnn.LocalizeString("Delete")</button>
+        </div>
+    </div>
+</div>

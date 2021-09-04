@@ -1,0 +1,41 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@using WebXMS.DAL.WebXMS.Models
+@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<XMSPagedList<WebXMS.DAL.ASLApp.Models.ASLReEvaluation>>
+
+<div>
+    <table class="table table-bordered mainTable" id="tableReEvaluations">
+        <thead>
+            <tr>
+                <th class="colHeader">
+                    <a class="colHeader">
+                        <span class="thtitle">@Dnn.LocalizeString("ReEvaluationResult")</span>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="colHeader">
+                        <span class="thtitle">@Dnn.LocalizeString("ReEvaluationDate")</span>
+                    </a>
+                </th>
+
+                <th class="colHeader">
+                    <a class="colHeader">
+                        <span class="thtitle">@Dnn.LocalizeString("ReEvaluationBy")</span>
+                    </a>
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var m in Model.results)
+            {
+                <tr>
+                    <td>@m.EvaluationResultName</td>
+                    <td><span class="format-date">@m.EvaluationDate</span></td>
+                    <td>@m.EvaluationByName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

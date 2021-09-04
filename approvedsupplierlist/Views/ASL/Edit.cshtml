@@ -1,0 +1,799 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@using DotNetNuke.Web.Mvc
+@using WebXMS.DAL.ASLApp.Models
+@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<WebXMS.DAL.ASLApp.Models.ASL>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+
+<link rel="stylesheet" href="https://unpkg.com/filepond/dist/filepond.min.css" type="text/css" />
+<h3 class="title">Add New Supplier</h3>
+<div>
+    <div class="dnnForm row">
+        <fieldset class="container col-md-8">
+            <div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title"
+                            data-toggle="collapse"
+                            data-target="#collapseBasic">
+                            @Dnn.LocalizeString("Basic")
+                        </h4>
+                    </div>
+                    <div id="collapseBasic" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("SupplierName")*</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextBoxFor(m => m.SupplierName, new { placeholder = Dnn.LocalizeString("SupplierNamePlaceHolder") })
+                                    <a href="javascript:;" class="rightAligned" data-toggle="tooltip" title="@Dnn.LocalizeString("SupplierNameHelp")"><span class="glyphicon glyphicon-alert"></span></a>
+                                    @Html.ValidationMessageFor(m => m.SupplierName, @Dnn.LocalizeString("SupplierNameRequired"))
+                                </div>
+                            </div>
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("ASLCategory")*</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.DropDownListFor(m => m.ASLCategoryId, (IEnumerable<System.Web.Mvc.SelectListItem>
+         )ViewBag.ASLCategories, Dnn.LocalizeString("ASLCategoryPlaceHolder"))
+                                    @Html.ValidationMessageFor(m => m.ASLCategoryId, @Dnn.LocalizeString("ASLCategoryRequired"))
+                                </div>
+                            </div>
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("ScopeOfService")*</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextBoxFor(m => m.ScopeOfService, new { placeholder = Dnn.LocalizeString("ScopeOfService") })
+                                    <a href="javascript:;" class="rightAligned" data-toggle="tooltip" title="@Dnn.LocalizeString(" ScopeOfServiceHelp")"><span class="glyphicon glyphicon-alert"></span></a>
+                                    @Html.ValidationMessageFor(m => m.ScopeOfService, @Dnn.LocalizeString("ScopeOfServiceRequired"))
+                                </div>
+                            </div>
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("SuppliedCompanyLocations")</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.ListBoxFor(m => m.VMSuppliedCompanyLocations, (ViewBag.SuppliedCompanyLocations as SelectList))
+                                </div>
+                            </div>
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("IsActive")*</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.RadioButtonFor(m => m.IsActive, true) @Dnn.LocalizeString("Yes")
+                                    @Html.RadioButtonFor(m => m.IsActive, false) @Dnn.LocalizeString("No")
+                                    <a href="javascript:;" class="rightAligned" data-toggle="tooltip" title="@Dnn.LocalizeString("IsActiveHelp")"><span class="glyphicon glyphicon-alert"></span></a>
+                                    @Html.ValidationMessageFor(m => m.IsActive, @Dnn.LocalizeString("IsActiveRequired"))
+                                </div>
+                            </div>
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("CriticalProductService")</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextAreaFor(m => m.CriticalProductService)
+                                </div>
+                            </div>
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("NonCriticalProductService")</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextAreaFor(m => m.NonCriticalProductService)
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title"
+                            data-toggle="collapse"
+                            data-target="#collapseOne">
+                            @Dnn.LocalizeString("SupplierMainLocation")
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("MainLocationAddress")*</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextBoxFor(m => m.MainLocationAddress, new { placeholder = Dnn.LocalizeString("MainLocationAddress") })
+                                    @Html.ValidationMessageFor(m => m.MainLocationAddress, @Dnn.LocalizeString("MainLocationAddressRequired"))
+                                </div>
+                            </div>
+
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("MainLocationCountry")</label>
+                                </div>
+                                <div class="col-md-9">
+
+                                    @Html.DropDownListFor(m => m.MainLocationCountry, (IEnumerable<System.Web.Mvc.SelectListItem>
+         )ViewBag.MainLocationCountries
+         , Dnn.LocalizeString("MainLocationCountry"),
+         new { onchange = @"loadMainRegions()" })
+                                    @Html.HiddenFor(m => m.MainLocationCountryName)
+                                </div>
+                            </div>
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("MainLocationState")</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.DropDownListFor(m => m.MainLocationState, (IEnumerable<System.Web.Mvc.SelectListItem>
+         )ViewBag.MainLocationStates
+         , Dnn.LocalizeString("MainLocationState"),
+         new { onchange = @"mainLocationStateChanged()" })
+                                    @Html.HiddenFor(m => m.MainLocationStateName)
+                                </div>
+                            </div>
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("MainLocationCity")</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextBoxFor(m => m.MainLocationCity, new { placeholder = Dnn.LocalizeString("MainLocationCity") })
+                                </div>
+                            </div>
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("MainLocationZip")</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextBoxFor(m => m.MainLocationZip, new { placeholder = Dnn.LocalizeString("MainLocationZip") })
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title"
+                            data-toggle="collapse"
+                            data-target="#collapseTwo">
+                            @Dnn.LocalizeString("SupplierSecondaryLocation")
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul id="savedSecondaryLocations" class="listRemovableItems">
+                                @if (ViewBag.SavedSupplierSecondaryLocations != null)
+                                {
+                                    foreach (ASLSecondaryLocation ssloc in ViewBag.SavedSupplierSecondaryLocations)
+                                    {
+                                        <li>@ssloc.SecondaryLocationAddress, @ssloc.SecondaryLocationCity, @ssloc.SecondaryLocationStateName, @ssloc.SecondaryLocationCountryName, @ssloc.SecondaryLocationZip <a header="@Dnn.LocalizeString("Confirm")" message="@Dnn.LocalizeString("DeleteLocation?")" cancel="@Dnn.LocalizeString("Cancel")" confirm="@Dnn.LocalizeString("Confirm")" SupplierId="@ssloc.ASLSecondaryLocationId" href="javascript:;" class="removeSecondary pull-right"><span class="glyphicon glyphicon-remove"></span></a></li>
+                                    }
+                                }
+                            </ul>
+                            @Html.HiddenFor(m => m.SecondaryLocations)
+
+                            <ul id="pendingSecondaryLocations" class="listRemovableItems"></ul>
+                            <button type="button" id="addSecondaryLocation">@Dnn.LocalizeString("AddSupplierSecondaryLocation")</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title"
+                            data-toggle="collapse"
+                            data-target="#collapseContact">
+                            @Dnn.LocalizeString("SupplierContact")
+
+                        </h4>
+                    </div>
+                    <div id="collapseContact" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("ContactName")*</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextBoxFor(m => m.ContactName, new { placeholder = Dnn.LocalizeString("ContactName") })
+                                    @Html.ValidationMessageFor(m => m.ContactName, @Dnn.LocalizeString("ContactNameRequired"))
+                                </div>
+                            </div>
+
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("ContactPhone")*</label>
+                                </div>
+                                <div class="col-md-9">
+
+                                    @Html.TextBoxFor(m => m.ContactPhone, new { placeholder = Dnn.LocalizeString("ContactPhone") })
+                                    @Html.ValidationMessageFor(m => m.ContactPhone, @Dnn.LocalizeString("ContactPhoneRequired"))
+
+                                </div>
+                            </div>
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("ContactEmail")*</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextBoxFor(m => m.ContactEmail, new { placeholder = Dnn.LocalizeString("ContactEmail") })
+                                    @Html.ValidationMessageFor(m => m.ContactEmail, @Dnn.LocalizeString("ContactEmailRequired"))
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title"
+                            data-toggle="collapse"
+                            data-target="#collapseEvaluation">
+                            @Dnn.LocalizeString("InitialEvaluation")
+                        </h4>
+                    </div>
+                    <div id="collapseEvaluation" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("InitialEvaluationDate")*</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextBoxFor(m => m.InitialEvaluationDate, new { placeholder = Dnn.LocalizeString("InitialEvaluationDate"), @class = "input-date" })
+                                    @Html.ValidationMessageFor(m => m.InitialEvaluationDate, @Dnn.LocalizeString("InitialEvaluationDateRequired"))
+
+                                </div>
+                            </div>
+
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("InitialEvaluationIsGrandfathered")*</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.RadioButtonFor(m => m.InitialEvaluationIsGrandfathered, true) @Dnn.LocalizeString("Yes")
+                                    @Html.RadioButtonFor(m => m.InitialEvaluationIsGrandfathered, false) @Dnn.LocalizeString("No")
+                                    <a href="javascript:;" class="rightAligned" data-toggle="tooltip" title="@Dnn.LocalizeString("InitialEvaluationIsGrandfatheredHelp")"><span class="glyphicon glyphicon-alert"></span></a>
+                                    @Html.ValidationMessageFor(m => m.InitialEvaluationIsGrandfathered, @Dnn.LocalizeString("InitialEvaluationIsGrandfatheredRequired"))
+                                </div>
+                            </div>
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("InitialEvaluationCriteria")*</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextAreaFor(m => m.InitialEvaluationCriteria, new { placeholder = Dnn.LocalizeString("InitialEvaluationCriteria") })
+                                    @Html.ValidationMessageFor(m => m.InitialEvaluationCriteria, @Dnn.LocalizeString("InitialEvaluationCriteriaRequired"))
+
+                                </div>
+                            </div>
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("InitialEvaluationResult")*</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.DropDownListFor(m => m.InitialEvaluationResultId, (IEnumerable<System.Web.Mvc.SelectListItem>
+                                    )ViewBag.InitialEvaluationResults, Dnn.LocalizeString("InitialEvaluationResult"))
+                                    @Html.ValidationMessageFor(m => m.InitialEvaluationResultId, @Dnn.LocalizeString("InitialEvaluationResultIdRequired"))
+
+                                </div>
+                            </div>
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("InitialEvaluationBy")</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.DropDownListFor(m => m.InitialEvaluationBy, (IEnumerable<System.Web.Mvc.SelectListItem>
+                                       )ViewBag.InitialEvaluationByUsers
+                                       , Dnn.LocalizeString("InitialEvaluationBy"))
+                                </div>
+                            </div>
+                            <div class="dnnFormItem row">
+                                <div class="col-md-3">
+                                    <label>@Dnn.LocalizeString("InitialEvaluationComments")*</label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextAreaFor(m => m.InitialEvaluationComments)
+                                    @Html.ValidationMessageFor(m => m.InitialEvaluationComments, @Dnn.LocalizeString("InitialEvaluationCommentsRequired"))
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title"
+                            data-toggle="collapse"
+                            data-target="#collapseAttachments">
+                            @Dnn.LocalizeString("AttachFiles")
+                        </h4>
+                    </div>
+                    <div id="collapseAttachments" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="row">
+                                <ul id="savedAttachments" class="listRemovableItems">
+                                    @if (ViewBag.SavedAttachments != null)
+                                    {
+                                        foreach (ASLAttachment att in ViewBag.SavedAttachments)
+                                        {
+                                            <li><a href="@Url.Action("GetFile", "ASL", new { ASLAttachmentId = att.ASLAttachmentId })">@att.FileName</a> <a header="@Dnn.LocalizeString("Confirm")" message="@Dnn.LocalizeString("DeleteFile?")" cancel="@Dnn.LocalizeString("Cancel")" confirm="@Dnn.LocalizeString("Confirm")" FileId="@att.ASLAttachmentId" href="javascript:;" class="removeFile pull-right"><span class="glyphicon glyphicon-remove"></span></a></li>
+                                        }
+                                    }
+                                </ul>
+                                <input type="file"
+                                       class="filepond"
+                                       name="upload"
+                                       multiple
+                                       data-max-file-size="3MB"
+                                       data-max-files="3"
+                                       id="upload" />
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title"
+                            data-toggle="collapse"
+                            data-target="#collapseReEvaluation">
+                            @Dnn.LocalizeString("ReEvaluationInterval")*
+                        </h4>
+                    </div>
+                    <div id="collapseReEvaluation" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="row">
+                                @Html.TextBoxFor(m => m.ReevaluationInterval, new { placeholder = Dnn.LocalizeString("ReevaluationInterval") })
+                                @Html.ValidationMessageFor(m => m.ReevaluationInterval, @Dnn.LocalizeString("ReevaluationIntervalRequired"))
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="validation-summary-errors">
+
+                <ul>
+                    @if (Model.ErrorFields != null)
+                    {
+                        foreach (var err in Model.ErrorFields)
+                        {
+                            <li>@Dnn.LocalizeString(err + "Required")</li>
+                        }
+                    }
+                </ul>
+            </div>
+            <div class="buttons">
+                <button type="submit" id="btnSave" class="dnnPrimaryAction">@Dnn.LocalizeString("Save")</button>
+            </div>
+
+        </fieldset>
+    </div>
+</div>
+
+<div class="modal" id="secondaryLocationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Dnn.LocalizeString("SupplierSecondaryLocation")</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="dnnFormItem row">
+                    <div class="col-md-3">
+                        <label>@Dnn.LocalizeString("SecondaryLocationAddress")</label>
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.SecondaryLocationAddress, new { placeholder = Dnn.LocalizeString("SecondaryLocationAddress") })
+                    </div>
+                </div>
+
+                <div class="dnnFormItem row">
+                    <div class="col-md-3">
+                        <label>@Dnn.LocalizeString("SecondaryLocationCountry")</label>
+                    </div>
+                    <div class="col-md-9">
+
+                        @Html.DropDownListFor(m => m.SecondaryLocationCountry, (IEnumerable<System.Web.Mvc.SelectListItem>
+)ViewBag.SecondaryLocationCountry
+, Dnn.LocalizeString("SecondaryLocationCountry"),
+new { onchange = @"secondaryMainRegions();" })
+
+                        @Html.HiddenFor(m => m.SecondaryLocationCountryName)
+                    </div>
+                </div>
+                <div class="dnnFormItem row">
+                    <div class="col-md-3">
+                        <label>@Dnn.LocalizeString("SecondaryLocationState")</label>
+                    </div>
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(m => m.SecondaryLocationState, (IEnumerable<System.Web.Mvc.SelectListItem>
+)ViewBag.SecondaryLocationState
+, Dnn.LocalizeString("SecondaryLocationState"),
+         new { onchange = @"secondaryLocationStateChanged();" })
+                        @Html.HiddenFor(m => m.SecondaryLocationStateName)
+                    </div>
+                </div>
+                <div class="dnnFormItem row">
+                    <div class="col-md-3">
+                        <label>@Dnn.LocalizeString("SecondaryLocationCity")</label>
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.SecondaryLocationCity, new { placeholder = Dnn.LocalizeString("SecondaryLocationCity") })
+                    </div>
+                </div>
+                <div class="dnnFormItem row">
+                    <div class="col-md-3">
+                        <label>@Dnn.LocalizeString("SecondaryLocationZip")</label>
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.SecondaryLocationZip, new { placeholder = Dnn.LocalizeString("SecondaryLocationZip") })
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="addSecondaryLocationData" class="btn btn-secondary" data-dismiss="modal">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (Model.upload != null && Model.upload.Length > 0)
+{
+    <input type="text" id="filesJSON" value="@Model.upload[0]" />
+}
+@section scripts
+    {
+    <script type="text/javascript">
+
+        var myArray = [];
+        @if (Model.upload != null && Model.upload.Length>0) {
+            foreach (var d in Model.upload)
+            {
+
+                @:var afile = @Html.Raw(d);
+                @:try { myArray.push(afile); } catch (e) { alert(e);}
+            }
+
+        }
+        console.log(myArray);
+    </script>
+    <script type="text/javascript">
+        var files = [];
+        $(document).ready(function () {
+            if ($("#MainLocationState").val()) {
+                $("#MainLocationStateName").val($('#MainLocationState').find("option:selected").text());
+            }
+            else
+                $("#MainLocationStateName").val(null);
+            if ($("#MainLocationCountry").val()) {
+                $("#MainLocationCountryName").val($('#MainLocationCountry').find("option:selected").text());
+            } else
+                $("#MainLocationCountry").val(null);
+
+
+            loadMainRegions = function () {
+                $("#MainLocationCountryName").val($('#MainLocationCountry').find("option:selected").text());
+                $.ajax({
+                    url: siteRoot + "DesktopModules/MVC/ApprovedSupplierList/ASL/GetRegions?CountryCode=" + $('#MainLocationCountry').val(),
+                    method: "Get",
+                    headers: {
+                        "ModuleId": ModuleId,
+                        "TabId": TabId,
+                        "RequestVerificationToken": rvtoken
+                    }
+                }).done(function (data) {
+                    $('#MainLocationState option:not(:first)').remove();
+                    for (var i = 0; i < data.length; i++) {
+
+                        $('#MainLocationState').append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                    }
+                    console.log(data);
+                });
+            }
+            secondaryMainRegions = function () {
+                $("#SecondaryLocationCountryName").val($('#SecondaryLocationCountry').find("option:selected").text());
+                $.ajax({
+                    url: siteRoot + "DesktopModules/MVC/ApprovedSupplierList/ASL/GetRegions?CountryCode=" + $('#SecondaryLocationCountry').val(),
+                    method: "Get",
+                    headers: {
+                        "ModuleId": ModuleId,
+                        "TabId": TabId,
+                        "RequestVerificationToken": rvtoken
+                    }
+                })
+                    .done(function (data) {
+                        $('#SecondaryLocationState option:not(:first)').remove();
+                        for (var i = 0; i < data.length; i++) {
+                            $('#SecondaryLocationState').append(
+                                $('<option></option>').val(data[i].Value).html(data[i].Text)
+                            );
+                        }
+                        console.log(data);
+
+                    });
+            }
+            mainLocationStateChanged = function () {
+                $("#MainLocationStateName").val($('#MainLocationState').find("option:selected").text());
+            }
+            secondaryLocationStateChanged = function () {
+                $("#SecondaryLocationStateName").val($('#SecondaryLocationState').find("option:selected").text());
+            }
+            FilePond.registerPlugin(
+                // encodes the file as base64 data
+                FilePondPluginFileEncode
+            );
+
+            const pond = FilePond.create(document.getElementById('upload'));
+            try {
+                if (myArray && myArray.length > 0) {
+                    for (var i = 0; i < myArray.length; i++) {
+                        var fileData = myArray[i];
+                        console.log('data:' + fileData.type + ';base64,' + fileData.data);
+                        var file = b64toBlob(fileData.data, fileData.type);
+                        file.name = fileData.name;
+                        pond.addFile(file);
+
+                    }
+
+                }
+            } catch (e) { alert('>>' + e); }
+
+            $('.panel').on('hidden.bs.collapse', function (e) {
+                $(e.currentTarget).find(".panel-heading").addClass('collapsed');
+            });
+            $('.panel').on('show.bs.collapse', function (e) {
+                $(e.currentTarget).find(".panel-heading").removeClass('collapsed');
+            });
+            $('#addSecondaryLocation').on('click', function () {
+                $('#secondaryLocationModal').modal();
+            });
+            $('#addSecondaryLocationData').on('click', function () {
+                $('#secondaryLocationModal').modal();
+
+            });
+            var secondaryLocations = [];
+            //in case if postback rebuild the list of locations
+            if ($('#SecondaryLocations').val().length > 0 && $('#SecondaryLocations').val() != '[]') {
+                secondaryLocations = $.parseJSON($('#SecondaryLocations').val());
+                if (secondaryLocations.length > 0) {
+                    for (var i = 0; i < secondaryLocations.length; i++) {
+                        var loc = secondaryLocations[i];
+                        $('#savedSecondaryLocations').append('<li><div class="removableitemdiv">' + loc.SecondaryLocationAddress + ', ' +
+                            loc.SecondaryLocationCity + ',' + loc.SecondaryLocationCountryName + loc.SecondaryLocationStateName + ', '
+                            + ', ' + loc.SecondaryLocationZip + '</div><div class="pull-right"><a href="javascript:;" onclick="removeme(this)" class="removeSecondary"><span class="glyphicon glyphicon-remove"></span></a></div></li>');
+
+                    }
+                }
+            }
+            $('#SecondaryLocations').val(JSON.stringify(secondaryLocations));
+            $('#secondaryLocationModal').on('shown.bs.modal', function () {
+                $('#SecondaryLocationAddress').val(null);
+                $('#SecondaryLocationCity').val(null);
+                $('#SecondaryLocationState').val(null);
+                $('#SecondaryLocationZip').val(null);
+                $('#SecondaryLocationCountry').val(null);
+                $('#SecondaryLocationCountryName').val(null);
+                $('#SecondaryLocationStateName').val(null);
+            });
+            $('#secondaryLocationModal').on('hidden.bs.modal', function () {
+                if (!$('#SecondaryLocationAddress').val()) { return; }
+                var loc = {
+                    SecondaryLocationAddress: $('#SecondaryLocationAddress').val(),
+                    SecondaryLocationCity: $('#SecondaryLocationCity').val(),
+                    SecondaryLocationState: $('#SecondaryLocationState').val(),
+                    SecondaryLocationZip: $('#SecondaryLocationZip').val(),
+                    SecondaryLocationCountry: $('#SecondaryLocationCountry').val(),
+                    SecondaryLocationCountryName: $('#SecondaryLocationCountryName').val(),
+                    SecondaryLocationStateName: $('#SecondaryLocationStateName').val()
+                };
+                secondaryLocations.push(loc);
+                $('#SecondaryLocations').val(JSON.stringify(secondaryLocations));
+                $('#pendingSecondaryLocations').append('<li><div class="removableitemdiv">' + loc.SecondaryLocationAddress + ', ' +
+                    loc.SecondaryLocationCity + ',' + loc.SecondaryLocationCountryName + loc.SecondaryLocationStateName + ', '
+                    + ', ' + loc.SecondaryLocationZip + '</div><div class="pull-right"><a href="javascript:;" onclick="removeme(this)" class="removeSecondary"><span class="glyphicon glyphicon-remove"></span></a></div></li>');
+                $('#SecondaryLocationAddress').val(null);
+                $('#SecondaryLocationCity').val(null);
+                $('#SecondaryLocationState').val(null);
+                $('#SecondaryLocationZip').val(null);
+                $('#SecondaryLocationCountry').val(null);
+                $('#SecondaryLocationCountryName').val(null);
+                $('#SecondaryLocationStateName').val(null);
+            });
+            removeme = function (ctl) {
+                secondaryLocations.splice($(ctl).closest("li").index(), 1);
+                $('#SecondaryLocations').val(JSON.stringify(secondaryLocations));
+                $(ctl).closest("li").hide();
+            }
+            deleteSupplierLocation = function (Id, ctl) {
+                $.ajax({
+                    url: siteRoot + "DesktopModules/MVC/ApprovedSupplierList/ASL/DeleteSupplierLocation?SupplierLocationId=" + Id,
+                    method: "Get",
+                    headers: {
+                        "ModuleId": ModuleId,
+                        "TabId": TabId,
+                        "RequestVerificationToken": rvtoken
+                    }
+                })
+                    .done(function (data) {
+                        if (data == 1)
+                            ctl.closest("li").hide();
+                    });
+            }
+            deleteAttachment = function (Id, ctl) {
+                $.ajax({
+                    url: siteRoot + "DesktopModules/MVC/ApprovedSupplierList/ASL/DeleteAttachment?AttachmentId=" + Id,
+                    method: "Get",
+                    headers: {
+                        "ModuleId": ModuleId,
+                        "TabId": TabId,
+                        "RequestVerificationToken": rvtoken
+                    }
+                })
+                    .done(function (data) {
+                        alert(data);
+                        if (data == 1)
+                            ctl.closest("li").hide();
+                    });
+            }
+
+            downloadAttachment = function (Id, ctl) {
+                document.location.href = siteRoot + "DesktopModules/MVC/ApprovedSupplierList/ASL/GetFile?ASLAttachmentId=" + Id;
+                $.ajax({
+                    url: siteRoot + "DesktopModules/MVC/ApprovedSupplierList/ASL/GetFile?ASLAttachmentId=" + Id,
+                    method: "Get",
+                    headers: {
+                        "ModuleId": ModuleId,
+                        "TabId": TabId,
+                        "RequestVerificationToken": rvtoken
+                    }
+                })
+                    .done(function (data) {
+                        alert(data);
+                        if (data == 1)
+                            ctl.closest("li").hide();
+                    });
+            }
+
+            confirm = function (heading, question, cancelButtonTxt, okButtonTxt, callback, id, ctl) {
+
+                var confirmModal =
+                    $('<div class="modal fade">' +
+                        '<div class="modal-dialog">' +
+                        '<div class="modal-content">' +
+                        '<div class="modal-header">' +
+                        '<a class="close" data-dismiss="modal" >&times;</a>' +
+                        '<h3>' + heading + '</h3>' +
+                        '</div>' +
+
+                        '<div class="modal-body">' +
+                        '<p>' + question + '</p>' +
+                        '</div>' +
+
+                        '<div class="modal-footer">' +
+                        '<a href="#!" class="btn" data-dismiss="modal">' +
+                        cancelButtonTxt +
+                        '</a>' +
+                        '<a href="#!" id="okButton" class="btn btn-primary">' +
+                        okButtonTxt +
+                        '</a>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>');
+
+                confirmModal.find('#okButton').click(function (event) {
+                    callback(id, ctl);
+                    confirmModal.modal('hide');
+                });
+
+                confirmModal.modal('show');
+            };
+
+            $(".removeSecondary").on('click', function () {
+                var ctl = $(this);
+                confirm(ctl.attr('header'), ctl.attr('message'), ctl.attr('cancel'), ctl.attr('confirm'), function (id, ctl) { deleteSupplierLocation(id, ctl); }, ctl.attr('SupplierId'), ctl);
+                //function(this){deleteSupplierLocation(ctl.attr('id'),this);}())()
+            });
+
+            $(".removeFile").on('click', function () {
+                var ctl = $(this);
+                confirm(ctl.attr('header'), ctl.attr('message'), ctl.attr('cancel'), ctl.attr('confirm'), function (id, ctl) { deleteAttachment(id, ctl); }, ctl.attr('FileId'), ctl);
+                //function(this){deleteSupplierLocation(ctl.attr('id'),this);}())()
+            });
+        });
+
+    </script>
+}
+
+<style>
+    .panel-heading h4:after {
+        font-family: 'Glyphicons Halflings';
+        content: "\e114";
+        float: right;
+        transition: all 0.5s;
+    }
+
+    .panel-heading.collapsed h4:after {
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+
+    /**
+    * FilePond Custom Styles
+    */
+    .filepond--drop-label {
+        color: #4c4e53;
+    }
+
+    .filepond--label-action {
+        text-decoration-color: #babdc0;
+    }
+
+    .filepond--panel-root {
+        border-radius: 2em;
+        background-color: #edf0f4;
+        height: 1em;
+    }
+
+    .filepond--item-panel {
+        background-color: #595e68;
+    }
+
+    .filepond--drip-blob {
+        background-color: #7f8a9a;
+    }
+
+    .filepond--list-scroller ul li {
+        list-style-type: none;
+    }
+
+    .validation-summary-errors {
+        font-size: small;
+        font-weight: normal;
+    }
+
+    .pull-right {
+        float: right;
+    }
+
+    .listRemovableItems {
+        width: 80%;
+    }
+
+        .listRemovableItems li {
+            list-style: none;
+            border: solid 1px;
+            margin: 5px;
+            padding: 4px;
+        }
+</style>

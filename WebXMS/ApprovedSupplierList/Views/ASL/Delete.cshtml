@@ -1,0 +1,19 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<WebXMS.DAL.ASLApp.Models.ASL>
+
+<div>
+    <div>
+        @*@Html.ValidationSummary(true)*@
+        <div>
+            <label>@Dnn.LocalizeString("AreYouSureDelete.Text").Replace("[Location]", Model.Location)</label>
+            @Html.HiddenFor(m => m.CompanyLocationId)
+            @Html.HiddenFor(m => m.PortalId)
+            @Html.HiddenFor(m => m.Location)
+
+        </div>
+        <div class="buttons">
+            <button type="submit" id="btnSave" class="dnnPrimaryAction">@Dnn.LocalizeString("Delete")</button>
+        </div>
+    </div>
+</div>

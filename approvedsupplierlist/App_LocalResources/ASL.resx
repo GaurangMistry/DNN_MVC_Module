@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddASL.Text" xml:space="preserve">
+    <value>Add  new supplier</value>
+  </data>
+  <data name="ASL.Text" xml:space="preserve">
+    <value>ASL</value>
+  </data>
+  <data name="ASLCategories.Text" xml:space="preserve">
+    <value>ASL Categories</value>
+  </data>
+  <data name="ManageCategories.Text" xml:space="preserve">
+    <value>Manage Categories</value>
+  </data>
+  <data name="SupplierName.Text" xml:space="preserve">
+    <value>Supplier Name</value>
+  </data>
+  <data name="ASLCategory.Text" xml:space="preserve">
+    <value>Supplier Category</value>
+  </data>
+  <data name="ASLCategoryRequired.Text" xml:space="preserve">
+    <value>Supplier Category Is Required</value>
+  </data>
+  <data name="SupplierNameHelp.Text" xml:space="preserve">
+    <value>Name of the new supplier</value>
+  </data>
+  <data name="SupplierNameRequired.Text" xml:space="preserve">
+    <value>Supplier Name Is Required</value>
+  </data>
+  <data name="ScopeOfService.Text" xml:space="preserve">
+    <value>Scope Of Services</value>
+  </data>
+  <data name="ScopeOfServiceHelp.Text" xml:space="preserve">
+    <value>Enter Scope Of Services</value>
+  </data>
+  <data name="ScopeOfServiceRequired.Text" xml:space="preserve">
+    <value>Scope Of Services Is Required</value>
+  </data>
+  <data name="ASLCategoryPlaceHolder.Text" xml:space="preserve">
+    <value>Please Select Supplier Category</value>
+  </data>
+  <data name="IsActive.Text" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="IsActiveHelp.Text" xml:space="preserve">
+    <value>Is this supplier Active?</value>
+  </data>
+  <data name="IsActiveRequired.Text" xml:space="preserve">
+    <value>This information is required</value>
+  </data>
+  <data name="MainLocationAddress.Text" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="MainLocationCity.Text" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="MainLocationCountry.Text" xml:space="preserve">
+    <value>Select Country</value>
+  </data>
+  <data name="MainLocationState.Text" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="No.Text" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="SupplierNamePlaceHolder.Text" xml:space="preserve">
+    <value>Supplier Name</value>
+  </data>
+  <data name="Yes.Text" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Zip.Text" xml:space="preserve">
+    <value>Zip Code</value>
+  </data>
+  <data name="AttachFiles.Text" xml:space="preserve">
+    <value>Attach Files</value>
+  </data>
+  <data name="Basic.Text" xml:space="preserve">
+    <value>Basic</value>
+  </data>
+  <data name="ContactEmail.Text" xml:space="preserve">
+    <value>Contact Email</value>
+  </data>
+  <data name="ContactName.Text" xml:space="preserve">
+    <value>Contact Name</value>
+  </data>
+  <data name="ContactPhone.Text" xml:space="preserve">
+    <value>Contact Phone</value>
+  </data>
+  <data name="CriticalProductService.Text" xml:space="preserve">
+    <value>Critical Product Service</value>
+  </data>
+  <data name="InitialEvaluation.Text" xml:space="preserve">
+    <value>Initial Evaluation</value>
+  </data>
+  <data name="InitialEvaluationBy.Text" xml:space="preserve">
+    <value>Evaluated By</value>
+  </data>
+  <data name="InitialEvaluationComments.Text" xml:space="preserve">
+    <value>Comments</value>
+  </data>
+  <data name="InitialEvaluationCriteria.Text" xml:space="preserve">
+    <value>Criteria for evaluation</value>
+  </data>
+  <data name="InitialEvaluationDate.Text" xml:space="preserve">
+    <value>Initial Evaluation Date</value>
+  </data>
+  <data name="InitialEvaluationIsGrandfathered.Text" xml:space="preserve">
+    <value>Is Grandfathered</value>
+  </data>
+  <data name="InitialEvaluationResult.Text" xml:space="preserve">
+    <value>Initial Evaluation Result</value>
+  </data>
+  <data name="MainLocationZip.Text" xml:space="preserve">
+    <value>Zip</value>
+  </data>
+  <data name="NonCriticalProductService.Text" xml:space="preserve">
+    <value>Non Critical Product Service</value>
+  </data>
+  <data name="ReEvaluationInterval.Text" xml:space="preserve">
+    <value>Re-Evaluation Interval In Months</value>
+  </data>
+  <data name="SecondaryLocationAddress.Text" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="SecondaryLocationCity.Text" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="SecondaryLocationCountry.Text" xml:space="preserve">
+    <value>Select Country</value>
+  </data>
+  <data name="SecondaryLocationState.Text" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="SuppliedCompanyLocations.Text" xml:space="preserve">
+    <value>Supplied Locations</value>
+  </data>
+  <data name="SupplierContact.Text" xml:space="preserve">
+    <value>Supplier Contact</value>
+  </data>
+  <data name="SupplierMainLocation.Text" xml:space="preserve">
+    <value>Supplier Main Location</value>
+  </data>
+  <data name="SupplierSecondaryLocation.Text" xml:space="preserve">
+    <value>Supplier Secondary Location</value>
+  </data>
+  <data name="AddSupplierSecondaryLocation.Text" xml:space="preserve">
+    <value>Add Supplier Secondary Location</value>
+  </data>
+  <data name="Cancel.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Confirm.Text" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="ContactEmailRequired.Text" xml:space="preserve">
+    <value>Contact Email Is Required</value>
+  </data>
+  <data name="ContactNameRequired.Text" xml:space="preserve">
+    <value>Contact Name Required</value>
+  </data>
+  <data name="ContactPhoneRequired.Text" xml:space="preserve">
+    <value>Contact Phone Is Required</value>
+  </data>
+  <data name="DeleteAttachment?.Text" xml:space="preserve">
+    <value>Delete Attachment</value>
+  </data>
+  <data name="DeleteLocation?.Text" xml:space="preserve">
+    <value>Delete Location</value>
+  </data>
+  <data name="InitialEvaluationCommentsRequired.Text" xml:space="preserve">
+    <value>Initial Evaluation Comments Required</value>
+  </data>
+  <data name="InitialEvaluationCriteriaRequired.Text" xml:space="preserve">
+    <value>Initial Evaluation Criteria Required</value>
+  </data>
+  <data name="InitialEvaluationDateRequired.Text" xml:space="preserve">
+    <value>Initial Evaluation Date Is Required</value>
+  </data>
+  <data name="InitialEvaluationIsGrandfatheredHelp.Text" xml:space="preserve">
+    <value>Is the supplier Grandfathered?</value>
+  </data>
+  <data name="InitialEvaluationIsGrandfatheredRequired.Text" xml:space="preserve">
+    <value>Initial Evaluation 'IsGrandfathered' Required</value>
+  </data>
+  <data name="InitialEvaluationResultIdRequired.Text" xml:space="preserve">
+    <value>Initial Evaluation Result Is Required</value>
+  </data>
+  <data name="MainLocationAddressRequired.Text" xml:space="preserve">
+    <value>Location Address Is Required</value>
+  </data>
+  <data name="ReevaluationIntervalRequired.Text" xml:space="preserve">
+    <value>Reevaluation Interval Required</value>
+  </data>
+  <data name="SecondaryLocationZip.Text" xml:space="preserve">
+    <value>Secondary Location Zip</value>
+  </data>
+  <data name="LastEvaluationDate.Text" xml:space="preserve">
+    <value>Last Evaluation Date</value>
+  </data>
+  <data name="NextEvaluationDate.Text" xml:space="preserve">
+    <value>Next Evaluation Date</value>
+  </data>
+  <data name="NextReEvaluationDate.Text" xml:space="preserve">
+    <value>Next Re-Evaluation Date</value>
+  </data>
+  <data name="PageOf.Text" xml:space="preserve">
+    <value>Page [PageIndex] of [PageCount]</value>
+  </data>
+  <data name="Re-Evaluations.Text" xml:space="preserve">
+    <value>Re-Evaluations</value>
+  </data>
+  <data name="Status.Text" xml:space="preserve">
+    <value>Status</value>
+  </data>
+</root>

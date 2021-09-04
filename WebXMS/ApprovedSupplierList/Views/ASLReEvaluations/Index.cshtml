@@ -1,0 +1,115 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@using WebXMS.DAL.WebXMS.Models
+@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<XMSPagedList<WebXMS.DAL.ASLApp.Models.ASLReEvaluation>>
+
+<div>
+
+    <h3 class="title">Re-Evaluations for @ViewBag.ParentASL.SupplierName</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <a class="button dnnPrimaryAction" href="@Url.Action("Edit", "ASLReEvaluations", new { ParentASLId = ViewBag.ParentASL.ASLId })"><span class="glyphicon glyphicon-plus"></span> @Dnn.LocalizeString("AddReEvaluation")</a>
+        </div>
+        @Html.HiddenFor(m => m.filter.FilterSortBy, new {data_val = "false", @class= "form-control submitAfterTyping" })
+        @Html.HiddenFor(m => m.filter.FilterSortDirection, new { data_val = "false", @class= "form-control submitAfterTyping" })
+        @Html.HiddenFor(m => m.filter.FilterPageIndex, new {data_val = "false", @class= "form-control submitAfterTyping" })
+        @Html.HiddenFor(m => m.filter.ParentASLId, new {data_val = "false", @class= "form-control submitAfterTyping" })
+
+        <div class="col-md-6 toolbar">
+            <a class="button dnnSecondaryAction pull-right" href="javascript:$('#tableReEvals').table2csv();;"><span class="glyphicon glyphicon-export"></span> @Dnn.LocalizeString("Export")</a>
+            <a class="button dnnSecondaryAction pull-right" href="javascript:printElementById('tableContainer');"><span class="glyphicon glyphicon-print"></span> @Dnn.LocalizeString("Print")</a>
+        </div>
+    </div>
+    
+    @if (Model.results.Count == 0)
+    {
+        <h3>No records</h3>
+    }
+    else
+    {
+        <div class="mt-10">
+            <div class="" id="tableContainer">
+                <div class="col-xs-12 form-inline  table-responsive flexcroll">
+                    <div class="tableinfo">
+                        <div class="pull-left">
+                            <span>
+                                @Dnn.LocalizeString("showing")
+                            </span>
+                            @Html.DropDownListFor(m => m.filter.FilterPageSize, (IEnumerable<System.Web.Mvc.SelectListItem>
+    )ViewBag.PageSize, new { data_val = "false", @class = "form-control submitOnChange inline" })
+                            <span>@Dnn.LocalizeString("of")</span> @Model.results.TotalCount
+                        </div>
+                        <div class="pull-right">
+
+                            <div class="right">
+                                @if (Model.results.HasPreviousPage)
+                                {
+                                    <a href="javascript:pageTable(@(Model.results.PageIndex - 1))"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                                }
+                                @Dnn.LocalizeString("PageOf").Replace("[PageIndex]", (@Model.results.PageIndex + 1).ToString()).Replace("[PageCount]", @Model.results.PageCount.ToString())
+                                @if (Model.results.HasNextPage)
+                                {
+                                    <a href="javascript:pageTable(@(Model.results.PageIndex + 1))"><span class="glyphicon glyphicon-chevron-right"></span></a>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <table class="table table-bordered" id="tableReEvals">
+                        <thead>
+                            <tr>
+                                <th class="colHeader"></th>
+                                <th class="colHeader">
+                                    <a class="colHeader">
+                                        <span class="thtitle">@Dnn.LocalizeString("ReEvaluationResult")</span>
+                                    </a>
+                                </th>
+                                <th scope="col">
+                                    <a class="colHeader">
+                                        <span class="thtitle">@Dnn.LocalizeString("ReEvaluationDate")</span>
+                                    </a>
+                                </th>
+
+                                <th class="colHeader">
+                                    <a class="colHeader">
+                                        <span class="thtitle">@Dnn.LocalizeString("ReEvaluationCriteria")</span>
+                                    </a>
+                                </th>
+                                <th class="colHeader">
+                                    <a class="colHeader">
+                                        <span class="thtitle">@Dnn.LocalizeString("ReEvaluationBy")</span>
+                                    </a>
+                                </th>
+                                <th class="colHeader">
+                                    <a class="colHeader">
+                                        <span class="thtitle">@Dnn.LocalizeString("ReEvaluationComments")</span>
+                                    </a>
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var m in Model.results)
+                            {
+                                <tr>
+                                    <td class="actionsButtons">
+                                        <a href="@Url.Action("Edit","ASLReEvaluations", new { ParentASLId = m.ParentASLId, ASLReEvaluationId = m.ASLReEvaluationId })"> <span class="glyphicon glyphicon-edit"></span></a>
+                                        <a href="@Url.Action("Delete","ASLReEvaluations", new { ASLReEvaluationId = m.ASLReEvaluationId})"> <span class="glyphicon glyphicon-remove"></span></a>
+                                    </td>
+                                    <td>@m.EvaluationResultName</td>
+                                    <td><span class="format-date">@m.EvaluationDate</span></td>
+                                    <td>@m.EvaluationCriteria</td>
+                                    <td>@m.EvaluationByName</td>
+                                    <td>@m.EvaluationComments</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>

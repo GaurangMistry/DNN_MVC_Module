@@ -1,0 +1,18 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<WebXMS.DAL.UniversalSettings.Models.CompanyLocation>
+
+<div>
+    <div>
+        @*@Html.ValidationSummary(true)*@
+        <div>
+            <label>@Dnn.LocalizeString("Location")*</label>
+            @Html.TextBoxFor(m => m.Location)
+            @Html.ValidationMessageFor(m => m.Location, @Dnn.LocalizeString("LocationRequired"))
+
+        </div>
+        <div class="buttons">
+            <button type="submit" id="btnSave" class="dnnPrimaryAction">@Dnn.LocalizeString("Save")</button>
+        </div>
+    </div>
+</div>

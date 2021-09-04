@@ -1,0 +1,77 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<WebXMS.DAL.ASLApp.Models.ASLReEvaluation>
+
+<div>
+    <div>
+        <div>
+            <h3 class="title">Add Re-Evaluation for  @ViewBag.ParentASL.SupplierName</h3>
+            @Html.HiddenFor(m => m.ParentASLId)
+
+            <div class="dnnFormItem row">
+                <div class="col-md-3">
+                    <label>@Dnn.LocalizeString("ReEvaluationDate")*</label>
+                </div>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(m => m.EvaluationDate, new { placeholder = Dnn.LocalizeString("ReEvaluationDate"), @class = "input-date" })
+                    @Html.ValidationMessageFor(m => m.EvaluationDate, @Dnn.LocalizeString("ReEvaluationDateRequired"))
+
+                </div>
+            </div>
+            <div class="dnnFormItem row">
+                <div class="col-md-3">
+                    <label>@Dnn.LocalizeString("NextReEvaluationDate")*</label>
+                </div>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(m => m.NextReEvaluationDate, new { placeholder = Dnn.LocalizeString("NextReEvaluationDate"), @class = "input-date" })
+                    @Html.ValidationMessageFor(m => m.NextReEvaluationDate, @Dnn.LocalizeString("ReEvaluationDateRequired"))
+                    <a href="">@Dnn.LocalizeString("Calculate")</a>
+                </div>
+            </div>
+            <div class="dnnFormItem row">
+                <div class="col-md-3">
+                    <label>@Dnn.LocalizeString("ReEvaluationCriteria")*</label>
+                </div>
+                <div class="col-md-9">
+                    @Html.TextAreaFor(m => m.EvaluationCriteria, new { placeholder = Dnn.LocalizeString("ReEvaluationCriteria") })
+                    @Html.ValidationMessageFor(m => m.EvaluationCriteria, @Dnn.LocalizeString("ReEvaluationCriteriaRequired"))
+
+                </div>
+            </div>
+            <div class="dnnFormItem row">
+                <div class="col-md-3">
+                    <label>@Dnn.LocalizeString("ReEvaluationResult")*</label>
+                </div>
+                <div class="col-md-9">
+                    @Html.DropDownListFor(m => m.InitialEvaluationResultId, (IEnumerable<System.Web.Mvc.SelectListItem>)ViewBag.ReEvaluationResults, Dnn.LocalizeString("ReEvaluationResult"))
+                    @Html.ValidationMessageFor(m => m.InitialEvaluationResultId, @Dnn.LocalizeString("ReEvaluationResultIdRequired"))
+
+                </div>
+            </div>
+            <div class="dnnFormItem row">
+                <div class="col-md-3">
+                    <label>@Dnn.LocalizeString("ReEvaluationBy")</label>
+                </div>
+                <div class="col-md-9">
+                    @Html.DropDownListFor(m => m.EvaluationBy, (IEnumerable<System.Web.Mvc.SelectListItem>
+                       )ViewBag.ReEvaluationByUsers
+                       , Dnn.LocalizeString("ReEvaluationBy"))
+                </div>
+            </div>
+            <div class="dnnFormItem row">
+                <div class="col-md-3">
+                    <label>@Dnn.LocalizeString("ReEvaluationComments")*</label>
+                </div>
+                <div class="col-md-9">
+                    @Html.TextAreaFor(m => m.EvaluationComments)
+                    @Html.ValidationMessageFor(m => m.EvaluationComments, @Dnn.LocalizeString("ReEvaluationCommentsRequired"))
+
+                </div>
+            </div>
+
+        </div>
+        <div class="buttons">
+            <button type="submit" id="btnSave" class="dnnPrimaryAction">@Dnn.LocalizeString("Save")</button>
+        </div>
+    </div>
+</div>

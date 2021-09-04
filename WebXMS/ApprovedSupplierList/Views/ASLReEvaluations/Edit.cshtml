@@ -1,0 +1,155 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@using WebXMS.DAL.ASLApp.Models
+@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<WebXMS.DAL.ASLApp.Models.ASLReEvaluation>
+
+<div>
+    <div>
+        <h3 class="title">
+            @(Model.ASLReEvaluationId == -1 ? Dnn.LocalizeString("AddReEvaluation") : Dnn.LocalizeString("EditReEvaluation")) @ViewBag.ParentASL.SupplierName
+
+        </h3>
+        @Html.HiddenFor(m => m.ParentASLId)
+
+        <div class="dnnForm row">
+            <fieldset class="container col-md-7">
+
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label>@Dnn.LocalizeString("ReEvaluationDate")*</label>
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(m => m.EvaluationDate, new { placeholder = Dnn.LocalizeString("ReEvaluationDate"), @class = "input-date form-control" })
+                        @Html.ValidationMessageFor(m => m.EvaluationDate, @Dnn.LocalizeString("ReEvaluationDateRequired"))
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label>@Dnn.LocalizeString("NextReEvaluationDate")*</label>
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(m => m.NextReEvaluationDate, new { placeholder = Dnn.LocalizeString("NextReEvaluationDate"), @class = "input-date form-control" })
+                        @Html.ValidationMessageFor(m => m.NextReEvaluationDate, @Dnn.LocalizeString("ReEvaluationDateRequired"))
+                        <a href="">@Dnn.LocalizeString("Calculate")</a>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label>@Dnn.LocalizeString("ReEvaluationCriteria")*</label>
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextAreaFor(m => m.EvaluationCriteria, new { placeholder = Dnn.LocalizeString("ReEvaluationCriteria"), @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.EvaluationCriteria, @Dnn.LocalizeString("ReEvaluationCriteriaRequired"), new { @class = "form-control" })
+
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label>@Dnn.LocalizeString("ReEvaluationResult")*</label>
+                    </div>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(m => m.InitialEvaluationResultId, (IEnumerable<System.Web.Mvc.SelectListItem>)ViewBag.ReEvaluationResults, Dnn.LocalizeString("ReEvaluationResult"), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.InitialEvaluationResultId, @Dnn.LocalizeString("ReEvaluationResultIdRequired"), new { @class = "form-control" })
+
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label>@Dnn.LocalizeString("ReEvaluationBy")</label>
+                    </div>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(m => m.EvaluationBy, (IEnumerable<System.Web.Mvc.SelectListItem>
+                           )ViewBag.ReEvaluationByUsers
+                           , Dnn.LocalizeString("ReEvaluationBy"), new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label>@Dnn.LocalizeString("ReEvaluationComments")*</label>
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextAreaFor(m => m.EvaluationComments, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.EvaluationComments, @Dnn.LocalizeString("ReEvaluationCommentsRequired"))
+
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label>@Dnn.LocalizeString("AttachFiles")*</label>
+                    </div>
+                    <div class="col-md-6">
+                        <ul id="savedAttachments" class="listRemovableItems">
+                            @if (ViewBag.SavedAttachments != null)
+                            {
+                                foreach (ASLReEvaluationAttachment att in ViewBag.SavedAttachments)
+                                {
+                                    <li><a href="@Url.Action("GetFile", "ASLReEvaluations", new { ASLReEvaluationAttachmentId = att.ASLReEvaluationAttachmentId })">@att.FileName</a> <a header="@Dnn.LocalizeString("Confirm")" message="@Dnn.LocalizeString("DeleteFile?")" cancel="@Dnn.LocalizeString("Cancel")" confirm="@Dnn.LocalizeString("Confirm")" FileId="@att.ASLReEvaluationAttachmentId" href="javascript:;" class="removeFile pull-right"><span class="glyphicon glyphicon-remove"></span></a></li>
+                                }
+                            }
+                        </ul>
+                        <input type="file"
+                               class="filepond"
+                               name="upload"
+                               multiple
+                               data-max-file-size="3MB"
+                               data-max-files="3"
+                               id="upload" />
+
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" id="btnSave" class="dnnPrimaryAction">@Dnn.LocalizeString("Save")</button>
+                        <a href="@Url.Action("Index","ASLReEvaluations", new { ParentASLId = Model.ParentASLId })" id="btnCancel" class=" button dnnSecondaryAction">@Dnn.LocalizeString("Cancel")</a>
+
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var rvtoken = $("input[name='__RequestVerificationToken']").val();
+        var ModuleId = @Dnn.ModuleContext.ModuleId;
+        var TabId = @Dnn.ModuleContext.TabId;
+        var siteRoot = dnn.getVar("sf_siteRoot", "/");
+        deleteAttachment = function (Id, ctl) {
+            $.ajax({
+                url: siteRoot + "DesktopModules/MVC/ApprovedSupplierList/ASLReEvaluations/DeleteAttachment?AttachmentId=" + Id,
+                method: "Get",
+                headers: {
+                    "ModuleId": ModuleId,
+                    "TabId": TabId,
+                    "RequestVerificationToken": rvtoken
+                }
+            })
+                .done(function (data) {
+                    if (data == 1)
+                        ctl.closest("li").hide();
+                });
+        }
+
+
+        downloadAttachment = function (Id, ctl) {
+            document.location.href = siteRoot + "DesktopModules/MVC/ApprovedSupplierList/ASLReEvaluations/GetFile?ASLAttachmentId=" + Id;
+            $.ajax({
+                url: siteRoot + "DesktopModules/MVC/ApprovedSupplierList/ASLReEvaluations/GetFile?ReEvaluations=" + Id,
+                method: "Get",
+                headers: {
+                    "ModuleId": ModuleId,
+                    "TabId": TabId,
+                    "RequestVerificationToken": rvtoken
+                }
+            })
+                .done(function (data) {
+                    if (data == 1)
+                        ctl.closest("li").hide();
+                });
+        }
+    });
+</script>

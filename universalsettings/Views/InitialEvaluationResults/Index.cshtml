@@ -1,0 +1,44 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<DotNetNuke.Collections.IPagedList<WebXMS.DAL.UniversalSettings.Models.InitialEvaluationResult>>
+
+<div>
+    <div><a href="@Url.Action("Edit","InitialEvaluationResults")"> @Dnn.LocalizeString("AddInitialEvaluationResults")</a></div>
+    @if (Model.Count == 0)
+    {
+        <h3>No records</h3>
+    }
+    else
+    {
+        <table class="table table-bordered table-responsive table-hover">
+            <tr>
+                <th>@Dnn.LocalizeString("InitialEvaluationResult")</th>
+            </tr>
+            @foreach (var m in Model)
+            {
+            <tr>
+                <td>@m.InitialEvaluationResultName</td>
+                <td><a href="@Url.Action("Edit","InitialEvaluationResults", new { InitialEvaluationResultId = m.InitialEvaluationResultId })"> @Dnn.LocalizeString("Edit")</a></td>
+                <td><a href="@Url.Action("Delete","InitialEvaluationResults", new { InitialEvaluationResultId = m.InitialEvaluationResultId })"> @Dnn.LocalizeString("Delete")</a></td>
+            </tr>
+            }
+        </table>
+    }
+    <div style="clear: both; margin-right: 130px;" class="right">
+        @if (Model.HasPreviousPage)
+        {
+            <a href="@Url.Action("Index", "InitialEvaluationResults", new {pageIndex = Model.PageIndex - 1})"><i class="fa fa-arrow-left"></i></a>
+        }
+        @Dnn.LocalizeString("PageOf").Replace("[PageIndex]", (@Model.PageIndex + 1).ToString()).Replace("[PageCount]", @Model.PageCount.ToString())
+        @if (Model.HasNextPage)
+        {
+            <a href="@Url.Action("Index", "InitialEvaluationResults", new {pageIndex = Model.PageIndex + 1})"><i class="fa fa-arrow-right"></i></a>
+        }
+    </div>
+    @if (@Dnn.ModuleContext.IsEditable && Convert.ToBoolean(Dnn.ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("AllowContactCreation", false)))
+    {
+        <div class="buttons">
+            <a class="dnnPrimaryAction" href="@Url.Action("Edit", new {ctl = "Edit"})">@Dnn.LocalizeString("AddInitialEvaluationResult")</a>
+        </div>
+    }
+</div>

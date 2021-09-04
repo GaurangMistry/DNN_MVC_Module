@@ -1,0 +1,18 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<WebXMS.DAL.ASLApp.Models.InitialEvaluationResult>
+
+<div>
+    <div>
+        @*@Html.ValidationSummary(true)*@
+        <div class="form-group">
+            <label>@Dnn.LocalizeString("InitialEvaluationResult")*</label>
+            @Html.TextBoxFor(m => m.InitialEvaluationResultName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.InitialEvaluationResultName, @Dnn.LocalizeString("NameRequired"))
+
+        </div>
+        <div class="buttons">
+            <button type="submit" id="btnSave" class="dnnPrimaryAction">@Dnn.LocalizeString("Save")</button>
+        </div>
+    </div>
+</div>

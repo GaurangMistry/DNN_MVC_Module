@@ -1,0 +1,753 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@using DotNetNuke.Web.Mvc
+
+
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+
+<link rel="stylesheet" href="https://unpkg.com/filepond/dist/filepond.min.css" type="text/css" />
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.css">
+
+<div class="dnnContactList">
+    @RenderBody()
+</div>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+
+<script src="https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js" type="text/javascript"></script>
+<script src="https://unpkg.com/filepond/dist/filepond.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="https://momentjs.com/downloads/moment.js"></script>
+
+<script src="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+
+<script>
+
+    $(document).ready(function () {
+          var rvtoken = $("input[name='__RequestVerificationToken']").val();
+        var ModuleId = @Dnn.ModuleContext.ModuleId;
+        var TabId = @Dnn.ModuleContext.TabId;
+        var siteRoot = dnn.getVar("sf_siteRoot", "/");
+
+        /// submit after typing
+        var typingTimer;                //timer identifier
+        var doneTypingInterval = 5000;  //time in ms, 5 second for example
+
+        $('.input-date').each(function () {
+            $(this).datepicker({ format: 'mm/dd/yyyy' });
+            if ($(this).val()) {
+                var d = moment($(this).val());
+                $(this).val(d.format('MM/DD/YYYY'));
+            }
+        });
+        $('.format-date').each(function () {
+            var d = moment($(this).text());
+            $(this).text(d.format('MM/DD/YYYY')); });
+
+        $(function () {
+            $(".table-wrap").each(function () {
+                var nmtTable = $(this);
+                var nmtHeadRow = nmtTable.find("thead tr");
+                nmtTable.find("tbody tr").each(function () {
+                    var curRow = $(this);
+                    for (var i = 0; i < curRow.find("td").length; i++) {
+                        var rowSelector = "td:eq(" + i + ")";
+                        var headSelector = "th:eq(" + i + ")";
+                        curRow.find(rowSelector).attr('data-title', nmtHeadRow.find(headSelector).text());
+                    }
+                });
+            });
+        });
+
+
+        if ($("#MainLocationState").val()) {
+            $("#MainLocationStateName").val($('#MainLocationState').find("option:selected").text());
+        }
+        else
+            $("#MainLocationStateName").val(null);
+        if ($("#MainLocationCountry").val()) {
+            $("#MainLocationCountryName").val($('#MainLocationCountry').find("option:selected").text());
+        } else
+            $("#MainLocationCountry").val(null);
+
+
+        loadMainRegions = function () {
+            $("#MainLocationCountryName").val($('#MainLocationCountry').find("option:selected").text());
+            $.ajax({
+                url: siteRoot + "DesktopModules/MVC/ApprovedSupplierList/ASL/GetRegions?CountryCode=" + $('#MainLocationCountry').val(),
+                method: "Get",
+                headers: {
+                    "ModuleId": ModuleId,
+                    "TabId": TabId,
+                    "RequestVerificationToken": rvtoken
+                }
+            }).done(function (data) {
+                $('#MainLocationState option:not(:first)').remove();
+                for (var i = 0; i < data.length; i++) {
+
+                    $('#MainLocationState').append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                }
+                console.log(data);
+            });
+        }
+        secondaryMainRegions = function () {
+            $("#SecondaryLocationCountryName").val($('#SecondaryLocationCountry').find("option:selected").text());
+            $.ajax({
+                url: siteRoot + "DesktopModules/MVC/ApprovedSupplierList/ASL/GetRegions?CountryCode=" + $('#SecondaryLocationCountry').val(),
+                method: "Get",
+                headers: {
+                    "ModuleId": ModuleId,
+                    "TabId": TabId,
+                    "RequestVerificationToken": rvtoken
+                }
+            })
+                .done(function (data) {
+                    $('#SecondaryLocationState option:not(:first)').remove();
+                    for (var i = 0; i < data.length; i++) {
+                        $('#SecondaryLocationState').append(
+                            $('<option></option>').val(data[i].Value).html(data[i].Text)
+                        );
+                    }
+                    console.log(data);
+
+                });
+        }
+        mainLocationStateChanged = function () {
+            $("#MainLocationStateName").val($('#MainLocationState').find("option:selected").text());
+        }
+        secondaryLocationStateChanged = function () {
+            $("#SecondaryLocationStateName").val($('#SecondaryLocationState').find("option:selected").text());
+        }
+
+        FilePond.registerPlugin(
+            // encodes the file as base64 data
+            FilePondPluginFileEncode
+        );
+
+        const pond = FilePond.create(document.getElementById('upload'));
+        try {
+            if (typeof myArray !== "undefined" && myArray.length > 0) {
+                for (var i = 0; i < myArray.length; i++) {
+                    var fileData = myArray[i];
+                    console.log('data:' + fileData.type + ';base64,' + fileData.data);
+                    var file = b64toBlob(fileData.data, fileData.type);
+                    file.name = fileData.name;
+                    pond.addFile(file);
+
+                }
+
+            }
+        } catch (e) { alert('>>' + e); }
+
+
+
+        $('.panel').on('hidden.bs.collapse', function (e) {
+            $(e.currentTarget).find(".panel-heading").addClass('collapsed');
+        });
+        $('.panel').on('show.bs.collapse', function (e) {
+            $(e.currentTarget).find(".panel-heading").removeClass('collapsed');
+        });
+
+
+        //Secondary Locations UI
+        $('#addSecondaryLocation').on('click', function () {
+            $('#secondaryLocationModal').modal();
+        });
+        $('#addSecondaryLocationData').on('click', function () {
+            $('#secondaryLocationModal').modal();
+
+        });
+        var secondaryLocations = [];
+        //in case if postback rebuild the list of locations
+        if ($('#SecondaryLocations').val() && $('#SecondaryLocations').val().length > 0 && $('#SecondaryLocations').val() != '[]') {
+            secondaryLocations = $.parseJSON($('#SecondaryLocations').val());
+            if (secondaryLocations.length > 0) {
+                for (var i = 0; i < secondaryLocations.length; i++) {
+                    var loc = secondaryLocations[i];
+                    $('#savedSecondaryLocations').append('<li><div class="removableitemdiv">' + loc.SecondaryLocationAddress + ', ' +
+                        loc.SecondaryLocationCity + ',' + loc.SecondaryLocationCountryName + loc.SecondaryLocationStateName + ', '
+                        + ', ' + loc.SecondaryLocationZip + '</div><div class="pull-right"><a href="javascript:;" onclick="removeme(this)" class="removeSecondary"><span class="glyphicon glyphicon-remove"></span></a></div></li>');
+
+                }
+            }
+        }
+        $('#SecondaryLocations').val(JSON.stringify(secondaryLocations));
+        $('#secondaryLocationModal').on('shown.bs.modal', function () {
+            $('#SecondaryLocationAddress').val(null);
+            $('#SecondaryLocationCity').val(null);
+            $('#SecondaryLocationState').val(null);
+            $('#SecondaryLocationZip').val(null);
+            $('#SecondaryLocationCountry').val(null);
+            $('#SecondaryLocationCountryName').val(null);
+            $('#SecondaryLocationStateName').val(null);
+        });
+        $('#secondaryLocationModal').on('hidden.bs.modal', function () {
+            if (!$('#SecondaryLocationAddress').val()) { return; }
+            var loc = {
+                SecondaryLocationAddress: $('#SecondaryLocationAddress').val(),
+                SecondaryLocationCity: $('#SecondaryLocationCity').val(),
+                SecondaryLocationState: $('#SecondaryLocationState').val(),
+                SecondaryLocationZip: $('#SecondaryLocationZip').val(),
+                SecondaryLocationCountry: $('#SecondaryLocationCountry').val(),
+                SecondaryLocationCountryName: $('#SecondaryLocationCountryName').val(),
+                SecondaryLocationStateName: $('#SecondaryLocationStateName').val()
+            };
+            secondaryLocations.push(loc);
+            $('#SecondaryLocations').val(JSON.stringify(secondaryLocations));
+            $('#pendingSecondaryLocations').append('<li><div class="removableitemdiv">' + loc.SecondaryLocationAddress + ', ' +
+                loc.SecondaryLocationCity + ',' + loc.SecondaryLocationCountryName + loc.SecondaryLocationStateName + ', '
+                + ', ' + loc.SecondaryLocationZip + '</div><div class="pull-right"><a href="javascript:;" onclick="removeme(this)" class="removeSecondary"><span class="glyphicon glyphicon-remove"></span></a></div></li>');
+            $('#SecondaryLocationAddress').val(null);
+            $('#SecondaryLocationCity').val(null);
+            $('#SecondaryLocationState').val(null);
+            $('#SecondaryLocationZip').val(null);
+            $('#SecondaryLocationCountry').val(null);
+            $('#SecondaryLocationCountryName').val(null);
+            $('#SecondaryLocationStateName').val(null);
+        });
+        removeme = function (ctl) {
+            secondaryLocations.splice($(ctl).closest("li").index(), 1);
+            $('#SecondaryLocations').val(JSON.stringify(secondaryLocations));
+            $(ctl).closest("li").hide();
+        }
+        deleteSupplierLocation = function (Id, ctl) {
+            $.ajax({
+                url: siteRoot + "DesktopModules/MVC/ApprovedSupplierList/ASL/DeleteSupplierLocation?SupplierLocationId=" + Id,
+                method: "Get",
+                headers: {
+                    "ModuleId": ModuleId,
+                    "TabId": TabId,
+                    "RequestVerificationToken": rvtoken
+                }
+            })
+                .done(function (data) {
+                    if (data == 1)
+                        ctl.closest("li").hide();
+                });
+        }
+
+
+        //Secondary Contacts UI
+        $('#addSecondaryContact').on('click', function () {
+            $('#secondaryContactModal').modal();
+        });
+        $('#addSecondaryContactData').on('click', function () {
+            $('#secondaryContactModal').modal();
+
+        });
+        var secondaryContacts = [];
+        //in case if postback rebuild the list of contacts
+        if ($('#SecondaryContacts').val() && $('#SecondaryContacts').val().length > 0 && $('#SecondaryContacts').val() != '[]') {
+            secondaryContacts = $.parseJSON($('#SecondaryContacts').val());
+            if (secondaryContacts.length > 0) {
+                for (var i = 0; i < secondaryContacts.length; i++) {
+                    var loc = secondaryContacts[i];
+                    $('#savedSecondaryContacts').append('<li><div class="removableitemdiv">' + loc.SecondaryContactAddress + ', ' +
+                        loc.SecondaryContactCity + ',' + loc.SecondaryContactCountryName + loc.SecondaryContactStateName + ', '
+                        + ', ' + loc.SecondaryContactZip + '</div><div class="pull-right"><a href="javascript:;" onclick="removeme(this)" class="removeSecondary"><span class="glyphicon glyphicon-remove"></span></a></div></li>');
+
+                }
+            }
+        }
+        $('#SecondaryContacts').val(JSON.stringify(secondaryContacts));
+        $('#secondaryContactModal').on('shown.bs.modal', function () {
+            $('#SecondaryContactName').val(null);
+            $('#SecondaryContactPhone').val(null);
+            $('#SecondaryLocationEmail').val(null);
+        });
+        $('#secondaryContactModal').on('hidden.bs.modal', function () {
+            if (!$('#SecondaryContactName').val()) { return; }
+            var loc = {
+                SecondaryContactName: $('#SecondaryContactName').val(),
+                SecondaryContactPhone: $('#SecondaryContactPhone').val(),
+                SecondaryLocationEmail: $('#SecondaryContactEmail').val()
+            };
+            secondaryContacts.push(loc);
+            $('#SecondaryContacts').val(JSON.stringify(secondaryContacts));
+            $('#pendingSecondaryContacts').append('<li><div class="removableitemdiv">' + loc.SecondaryContactName + ', ' +
+                loc.SecondaryContactPhone + ',' + loc.SecondaryLocationEmail + '</div><div class="pull-right"><a href="javascript:;" onclick="removeme(this)" class="removeSecondary"><span class="glyphicon glyphicon-remove"></span></a></div></li>');
+            $('#SecondaryContactName').val(null);
+            $('#SecondaryContactPhone').val(null);
+            $('#SecondaryLocationEmail').val(null);
+        });
+
+
+
+        removeme = function (ctl) {
+            secondaryLocations.splice($(ctl).closest("li").index(), 1);
+            $('#SecondaryLocations').val(JSON.stringify(secondaryLocations));
+            $(ctl).closest("li").hide();
+        }
+        deleteSupplierLocation = function (Id, ctl) {
+            $.ajax({
+                url: siteRoot + "DesktopModules/MVC/ApprovedSupplierList/ASL/DeleteSupplierLocation?SupplierLocationId=" + Id,
+                method: "Get",
+                headers: {
+                    "ModuleId": ModuleId,
+                    "TabId": TabId,
+                    "RequestVerificationToken": rvtoken
+                }
+            })
+                .done(function (data) {
+                    if (data == 1)
+                        ctl.closest("li").hide();
+                });
+        }
+
+
+
+
+        
+        confirm = function (heading, question, cancelButtonTxt, okButtonTxt, callback, id, ctl) {
+
+            var confirmModal =
+                $('<div class="modal fade">' +
+                    '<div class="modal-dialog">' +
+                    '<div class="modal-content">' +
+                    '<div class="modal-header">' +
+                    '<a class="close" data-dismiss="modal" >&times;</a>' +
+                    '<h3>' + heading + '</h3>' +
+                    '</div>' +
+
+                    '<div class="modal-body">' +
+                    '<p>' + question + '</p>' +
+                    '</div>' +
+
+                    '<div class="modal-footer">' +
+                    '<a href="#!" class="btn" data-dismiss="modal">' +
+                    cancelButtonTxt +
+                    '</a>' +
+                    '<a href="#!" id="okButton" class="btn btn-primary">' +
+                    okButtonTxt +
+                    '</a>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>');
+
+            confirmModal.find('#okButton').click(function (event) {
+                callback(id, ctl);
+                confirmModal.modal('hide');
+            });
+
+            confirmModal.modal('show');
+        };
+
+        $(".removeSecondary").on('click', function () {
+            var ctl = $(this);
+            confirm(ctl.attr('header'), ctl.attr('message'), ctl.attr('cancel'), ctl.attr('confirm'), function (id, ctl) { deleteSupplierLocation(id, ctl); }, ctl.attr('SupplierId'), ctl);
+            //function(this){deleteSupplierLocation(ctl.attr('id'),this);}())()
+        });
+
+        $(".removeFile").on('click', function () {
+            var ctl = $(this);
+            confirm(ctl.attr('header'), ctl.attr('message'), ctl.attr('cancel'), ctl.attr('confirm'), function (id, ctl) { deleteAttachment(id, ctl); }, ctl.attr('FileId'), ctl);
+            //function(this){deleteSupplierLocation(ctl.attr('id'),this);}())()
+        });
+
+
+
+        //on keyup, start the countdown
+        $(".submitAfterTyping").on('keyup', function (e) {
+            var ctl = $(this);
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(function () { ctl.closest('form').submit() }, 2000);
+        });
+
+        //on keydown, clear the countdown
+        $(".submitAfterTyping").on('keydown', function () {
+            clearTimeout(typingTimer);
+        });
+        $(".submitOnChange").on('change', function (e) {
+            $(this).closest('form').submit();
+        });
+
+        sortTable = function (colName) {
+                if ($("#filter_FilterSortBy").val() && $("#filter_FilterSortBy").val() == colName) {
+                    if ($("#filter_FilterSortDirection").val() == 'ASC')
+                        $("#filter_FilterSortDirection").val('DESC');
+                    else
+                        $("#filter_FilterSortDirection").val('ASC');
+
+                    $("#filter_FilterSortDirection").closest('form').submit();
+                }
+                else {
+                    $("#filter_FilterSortBy").val(colName);
+                    $("#filter_FilterSortDirection").val('ASC');
+                    $("#filter_FilterSortDirection").closest('form').submit();
+                }
+
+        }
+        pageTable = function (page) {
+            $("#filter_FilterPageIndex").val(page)
+            $("#filter_FilterSortDirection").closest('form').submit();
+
+        }
+
+    });
+
+    (function ($) {
+
+        var options = {
+            /* action='downoad' options */
+            filename: 'table.csv',
+
+            /* action='output' options */
+            appendTo: 'body',
+
+            /* general options */
+            separator: ',',
+            newline: '\n',
+            quoteFields: true,
+            excludeColumns: '',
+            excludeRows: ''
+        };
+
+        function quote(text) {
+            return '"' + text.replace('"', '""') + '"';
+        }
+
+        // taken from http://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+
+        function convert(table) {
+            var output = "";
+
+            var rows = table.find('tr').not(options.excludeRows);
+
+            var numCols = rows.first().find("td,th").filter(":visible").not(options.excludeColumns).length;
+            console.log(numCols)
+
+            rows.each(function () {
+                $(this).find("td,th").filter(":visible").not(options.excludeColumns)
+                    .each(function (i, col) {
+                        col = $(col);
+
+                        output += options.quoteFields ? quote(col.text()) : col.text();
+                        console.log(i);
+                        if (i != numCols - 1) {
+                            output += options.separator;
+                        } else {
+                            output += options.newline;
+                        }
+                    });
+            });
+
+            return output;
+        }
+
+        $.fn.table2csv = function (action, opt) {
+            if (typeof action === 'object') {
+                opt = action;
+                action = 'download';
+            } else if (action === undefined) {
+                action = 'download';
+            }
+
+            $.extend(options, opt);
+
+            var table = this; // TODO use $.each
+
+            switch (action) {
+                case 'download':
+                    var csv = convert(table);
+                    download(options.filename, csv);
+                    break;
+                case 'output':
+                    var csv = convert(table);
+                    $(options.appendTo).append($('<pre>').text(csv));
+                    break;
+            }
+
+            return this;
+        }
+
+    }(jQuery));
+
+    function b64toBlob(b64Data, contentType, sliceSize) {
+        contentType = contentType || '';
+        sliceSize = sliceSize || 512;
+
+        var byteCharacters = atob(b64Data);
+        var byteArrays = [];
+
+        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            var byteNumbers = new Array(slice.length);
+            for (var i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            var byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        var blob = new Blob(byteArrays, { type: contentType, name: 'hey' });
+
+        return blob;
+    }
+  function printFromHtmlString(htmlString) {
+
+    var windowUrl = 'about:blank';
+    var uniqueName = new Date();
+    var windowName = 'Print' + uniqueName.getTime();
+    var printWindow = window.open(windowUrl, windowName);
+
+    printWindow.document.write('<title>Print Preview</title>');
+    //  Add Bootstrap to inject print css styles
+      printWindow.document.write('<link rel="stylesheet" href="/Portals/_default/Skins/Xcillion/bootstrap/css/bootstrap.min.css?cdv=194">');
+    //  Don't show url paths
+    //  And fix responsive table - Should have been fixed here, but isn't:
+    //  https://github.com/twbs/bootstrap/issues/12722
+    printWindow.document.write('<style> @@media print {  a[href]:after {content: "";} .table-responsive{overflow: visible;} .hidden-print{display:none;}  }</style>');
+    //  Add styles for the browser tab to closer mimic print preview
+      printWindow.document.write('<style> .hidden-print, .hide-print{display:none;}  </style>');
+      printWindow.document.write('<style> .show-print{display:initial;}  </style>');
+    //  Might want to switch to outerHTML to include originally targeted node
+    printWindow.document.write(htmlString);
+
+    printWindow.document.close();
+
+
+    // Polling for when page has finished loading css
+    var interval = setInterval(function () {
+        if (document.readyState === 'complete') {
+            clearInterval(interval);
+            printWindow.print();
+            printWindow.close();
+        }
+    }, 100);
+}
+
+function printElementById(elementId) {
+
+    $('.panel').each(function () {
+        $(this).find('.collapse').collapse('show');
+    });
+    $('.button').each(function () {
+        $(this).hide();
+    });
+    $('button').each(function () {
+        $(this).hide();
+    });
+    $('canvas').each(function () {
+        var url = document.getElementById($(this).attr("id")).toDataURL();
+        $(this).closest('div').append('<img src="' + url + '" />');
+
+    });
+    $('canvas').each(function () { $(this).remove(); });
+    var printElement = document.getElementById(elementId);
+
+    if (!printElement) {
+        return alert("Error Generating Print View For: " + elementId)
+    }
+
+    printFromHtmlString(printElement.outerHTML);
+}
+
+</script>
+@RenderSection("scripts", required: false)
+
+<style>
+
+    .removableitemdiv {
+        display: inline-block;
+        max-width: 90%;
+        white-space: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .show-print {
+        display: none;
+    }
+</style>
+
+
+<style>
+    .outer {
+        padding: 20px;
+        -webkit-border-radius: 20px;
+    }
+
+
+    thead {
+    }
+
+    tbody {
+    }
+
+    th {
+        text-align: center !important;
+    }
+
+    .flexcroll {
+    }
+
+        /* Let's get this party started */
+        .flexcroll::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        /* Track */
+        .flexcroll::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            -webkit-border-radius: 10px;
+            border-radius: 10px;
+        }
+
+        /* Handle */
+        .flexcroll::-webkit-scrollbar-thumb {
+            -webkit-border-radius: 10px;
+            border-radius: 10px;
+            background: rgba(60,60,60,0.8);
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+        }
+
+    th {
+        white-space: nowrap;
+        position: relative;
+    }
+
+    .colHeader {
+        padding-right: 35px;
+    }
+
+    .headerSortDown:after,
+    .headerSortUp:after,
+    .headerSortable:after {
+        font-family: 'Glyphicons Halflings';
+        content: "\e114";
+        float: right;
+        transition: all 0.5s;
+        float: right;
+        position: absolute;
+        right: 3px;
+        top: 10px;
+    }
+
+    .headerSortable:after {
+        content: "\e150";
+        color: silver;
+    }
+
+    .headerSortUp:after {
+        content: "\e113";
+        border-bottom-color: silver;
+    }
+
+    .tableinfo {
+        padding-top: 10px;
+    }
+
+    .filters input {
+        margin-bottom: 4px;
+    }
+
+    .toolbar .button {
+        float: right;
+        margin-left: 3px;
+    }
+
+    .actionsButtons a {
+        margin-left: 4px;
+    }
+
+    .actionsButtons {
+        white-space: nowrap;
+    }
+
+
+
+
+
+
+    .panel-heading h4:after {
+        font-family: 'Glyphicons Halflings';
+        content: "\e114";
+        float: right;
+        transition: all 0.5s;
+    }
+
+    .panel-heading.collapsed h4:after {
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+
+    /**
+    * FilePond Custom Styles
+    */
+    .filepond--drop-label {
+        color: #4c4e53;
+    }
+
+    .filepond--label-action {
+        text-decoration-color: #babdc0;
+    }
+
+    .filepond--panel-root {
+        border-radius: 2em;
+        background-color: #edf0f4;
+        height: 1em;
+    }
+
+    .filepond--item-panel {
+        background-color: #595e68;
+    }
+
+    .filepond--drip-blob {
+        background-color: #7f8a9a;
+    }
+
+    .filepond--list-scroller ul li {
+        list-style-type: none;
+    }
+
+    .validation-summary-errors {
+        font-size: small;
+        font-weight: normal;
+    }
+
+    .pull-right {
+        float: right;
+    }
+
+    .listRemovableItems {
+        width: 80%;
+    }
+
+        .listRemovableItems li {
+            list-style: none;
+            border: solid 1px;
+            margin: 5px;
+            padding: 4px;
+        }
+
+    .filepond .dnnInputFileWrapper {
+        display: none !important;
+    }
+
+    .field-validation-error {
+        color: red;
+    }
+
+    .field-validation-error, .validation-summary-errors {
+        color: red;
+    } 
+</style>

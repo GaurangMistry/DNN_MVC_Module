@@ -1,0 +1,70 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<DotNetNuke.Collections.IPagedList<WebXMS.DAL.ASLApp.Models.ASL>>
+
+<div>
+    <div class="row">
+        <div class="col-md-3">
+            <a class="button dnnPrimaryAction" href="@Url.Action("Edit","ASL")"><span class="glyphicon glyphicon-plus"></span> @Dnn.LocalizeString("AddASL")</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+         
+        </div>
+    </div>
+    @if (Model.Count == 0)
+    {
+        <h3>No records</h3>
+    }
+    else
+    {
+        <table class="table table-bordered table-responsive table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>@Dnn.LocalizeString("SupplierName")</th>
+                    <th>@Dnn.LocalizeString("ASLCategories")</th>
+                    <th>@Dnn.LocalizeString("ScopeOfService")</th>
+                    <th>@Dnn.LocalizeString("IsActive")</th>
+                    <th>@Dnn.LocalizeString("ContactName")</th>
+                    <th>@Dnn.LocalizeString("InitialEvaluationDate")</th>
+                    <th>@Dnn.LocalizeString("LastEvaluationDate")</th>
+                    <th>@Dnn.LocalizeString("Status")</th>
+                    <th>@Dnn.LocalizeString("NextEvaluationDate")</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            @foreach (var m in Model)
+            {
+                <tr>
+                    <td>@m.SupplierName</td>
+                    <td>@m.CategoryName</td>
+                    <td>@m.ScopeOfService</td>
+                    <td>@m.IsActive</td>
+                    <td>@m.ContactName</td>
+                    <td><span class="format-date">@m.InitialEvaluationDate</span></td>
+                    <td><span class="format-date">@m.LastReEvaluationDate</span></td>
+                    <td>@m.Status</td>
+                    <td><span class="format-date">@m.NextReEvaluationDate</span></td>
+                    <td>
+                        <a href="@Url.Action("Edit","ASL", new { ASLId = m.ASLId })"> @Dnn.LocalizeString("Edit")</a>
+                        <a href="@Url.Action("Delete","ASL", new { ASLId = m.ASLId })"> @Dnn.LocalizeString("Delete")</a>
+                        <a href="@Url.Action("Index","ASLReEvaluations", new { ParentASLId = m.ASLId })"> @Dnn.LocalizeString("Re-Evaluations")</a>
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+    <div style="clear: both; margin-right: 130px;" class="right">
+        @if (Model.HasPreviousPage)
+        {
+            <a href="@Url.Action("Index", "ASL", new {pageIndex = Model.PageIndex - 1})"><span class="glyphicon glyphicon-chevron-left"></span></a>
+        }
+        @Dnn.LocalizeString("PageOf").Replace("[PageIndex]", (@Model.PageIndex + 1).ToString()).Replace("[PageCount]", @Model.PageCount.ToString())
+        @if (Model.HasNextPage)
+        {
+            <a href="@Url.Action("Index", "ASL", new {pageIndex = Model.PageIndex + 1})"><span class="glyphicon glyphicon-chevron-right"></span></a>
+        }
+    </div>
+
+</div>

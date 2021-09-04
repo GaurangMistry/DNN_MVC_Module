@@ -1,0 +1,185 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@using WebXMS.DAL.WebXMS.Models
+@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<List<XMSChartModel>>
+
+
+    <div class="row">
+        <div class="col-md-9">
+            <h3 class="title">Approved Supplier List Key Performance Indicators</h3>
+        </div>
+        <div class="col-md-3">
+            <a class="button dnnPrimaryAction pull-right" href="javascript:printElementById('chartsView');"><span class="glyphicon glyphicon-print"></span> @Dnn.LocalizeString("Print")</a>
+        </div>
+    </div>
+    <div class="row">
+    
+        <div class="col-md-6">
+            @Html.DropDownList("catId",(IEnumerable<System.Web.Mvc.SelectListItem>
+)ViewBag.ASLCategories, Dnn.LocalizeString("ASLCategoryPlaceHolder"),new { @class = "form-control submitOnChange .hide-print" })
+            </div>
+        <div class="col-md-6">
+            @Html.DropDownList("isActive",(IEnumerable<System.Web.Mvc.SelectListItem>
+)ViewBag.IsActiveList, Dnn.LocalizeString("IsActive"),new { @class = "form-control submitOnChange .hide-print" })
+        </div>
+    </div>
+    <div id="chartsView">
+        <div class="row show-print"><div class="col-md-9">
+    <h3 class="title">Approved Supplier List Key Performance Indicators</h3>
+</div></div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <canvas id="chartSuppliersByCategories"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <canvas id="chartSuppliersByStatus"></canvas>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <canvas id="chartSuppliersByReEval"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <canvas id="chartSuppliersByEvalDate"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+
+    $(document).ready(function () {
+               var rvtoken = $("input[name='__RequestVerificationToken']").val();
+        var ModuleId = @Dnn.ModuleContext.ModuleId;
+        var TabId = @Dnn.ModuleContext.TabId;
+        var siteRoot = dnn.getVar("sf_siteRoot", "/");
+
+
+        var dataByCat = [];
+        var labelsByCat = [];
+
+        var stepSize = 1;
+        stepSizeByCat = @(Model[0].max/5);
+        @if (Model[0].data != null && Model[0].data.Count>0) {
+            foreach (var d in Model[0].data)
+            {
+                @:dataByCat.push(@d);
+            }
+        }
+         @if (Model[0].labels != null && Model[0].labels.Count>0) {
+            foreach (var d in Model[0].labels)
+            {
+                @:labelsByCat.push('@d');
+            }
+        }
+        var ctxByCat = document.getElementById('chartSuppliersByCategories').getContext('2d');
+        titleByCat= '@ViewBag.TitleByCat';
+
+
+        var dataByStatus = [];
+        var labelsByStatus = [];
+         stepSizeByStatus = @(Model[1].max/5);
+         @if (Model[1].data != null && Model[1].data.Count>0) {
+            foreach (var d in Model[1].data)
+            {
+                @:dataByStatus.push(@d);
+            }
+        }
+         @if (Model[1].labels != null && Model[1].labels.Count>0) {
+            foreach (var d in Model[1].labels)
+            {
+                @:labelsByStatus.push('@d');
+            }
+        }
+         var ctxByStatus = document.getElementById('chartSuppliersByStatus').getContext('2d');
+        titleByStatus= '@ViewBag.TitleByStatus';
+
+
+        var dataByReEval = [];
+        var labelsByReEval = [];
+        stepSizeByReEval = @(Model[2].max/5);
+         @if (Model[2].data != null && Model[2].data.Count>0) {
+            foreach (var d in Model[2].data)
+            {
+                @:dataByReEval.push(@d);
+            }
+        }
+         @if (Model[2].labels != null && Model[2].labels.Count>0) {
+            foreach (var d in Model[2].labels)
+            {
+                @:labelsByReEval.push('@d');
+            }
+        }
+        var ctxByReEval = document.getElementById('chartSuppliersByReEval').getContext('2d');
+        titleByReEval= '@ViewBag.TitleByReEval';
+
+
+         var dataByEvalDate = [];
+        var labelsByEvalDate = [];
+        stepSizeByEvalDate = @(Model[3].max/5);
+         @if (Model[3].data != null && Model[3].data.Count>0) {
+            foreach (var d in Model[3].data)
+            {
+                @:dataByEvalDate.push(@d);
+            }
+        }
+         @if (Model[3].labels != null && Model[3].labels.Count>0) {
+            foreach (var d in Model[3].labels)
+            {
+                @:labelsByEvalDate.push('@d');
+            }
+        }
+        var ctxByEvalDate = document.getElementById('chartSuppliersByEvalDate').getContext('2d');
+        titleByEvalDate= '@ViewBag.TitleByEvalDate';
+
+        var initChart = function (ctx,label,data,title,stepsize) {
+            new Chart(ctx, {
+                // The type of chart we want to create
+                type: 'bar',
+
+                // The data for our dataset
+                data: {
+                    labels: label,
+                    datasets: [{
+                        label: title,
+                        backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: data,
+                        barThickness: 20
+                    }]
+                },
+
+                // Configuration options go here
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                callback: function (value) { if (Number.isInteger(value)) { return value; } },
+                                stepSize: stepsize
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+
+        initChart(ctxByCat, labelsByCat, dataByCat, titleByCat, stepSizeByCat);
+
+        initChart(ctxByStatus, labelsByStatus, dataByStatus, titleByCat, stepSizeByStatus);
+        initChart(ctxByReEval, labelsByReEval, dataByReEval, titleByReEval, stepSizeByReEval);
+        initChart(ctxByEvalDate, labelsByEvalDate, dataByEvalDate, titleByEvalDate, stepSizeByEvalDate);
+
+    });
+
+
+</script>

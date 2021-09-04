@@ -1,0 +1,224 @@
+﻿@using DotNetNuke.Collections
+@using DotNetNuke.Web.Mvc.Helpers
+@using WebXMS.DAL.WebXMS.Models
+@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<XMSPagedList<WebXMS.DAL.ASLApp.Models.ASL>>
+
+<div class="">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>@Dnn.LocalizeString("ASLTitle")</h3>
+            </div>
+            <div class="col-md-6">
+                <a class="button dnnPrimaryAction" href="@Url.Action("Edit", "ASL")"><span class="glyphicon glyphicon-plus"></span> @Dnn.LocalizeString("AddASL")</a>
+            </div>
+
+            <div class="col-md-6 toolbar">
+                <a class="button dnnSecondaryAction pull-right" href="@Url.Action("KPI", "ASL")"><span class="glyphicon glyphicon-stats"></span> @Dnn.LocalizeString("KPIs")</a>
+                <a class="button dnnSecondaryAction pull-right" href="javascript:$('#tableSuppliers').table2csv();;"><span class="glyphicon glyphicon-export"></span> @Dnn.LocalizeString("Export")</a>
+                <a class="button dnnSecondaryAction pull-right" href="javascript:printElementById('tableContainer');"><span class="glyphicon glyphicon-print"></span> @Dnn.LocalizeString("Print")</a>
+
+                <a class="button dnnSecondaryAction pull-right" href="javascript:$('.filters').slideToggle()"><span class="glyphicon glyphicon-filter"></span> @Dnn.LocalizeString("Filters")</a>
+            </div>
+        </div>
+        <div class="filters" style="display:none;">
+            <div class="row mx-auto">
+                @Html.HiddenFor(m => m.filter.FilterSortBy, new { placeholder = @Dnn.LocalizeString("SupplierName"),
+    data_val = "false", @class= "form-control submitAfterTyping" })
+                @Html.HiddenFor(m => m.filter.FilterSortDirection, new { placeholder = @Dnn.LocalizeString("SupplierName"),
+    data_val = "false", @class= "form-control submitAfterTyping" })
+                @Html.HiddenFor(m => m.filter.FilterPageIndex, new { placeholder = @Dnn.LocalizeString("SupplierName"),
+           data_val = "false", @class= "form-control submitAfterTyping" })
+
+                <div class="col-md-3">
+                    @Html.TextBoxFor(m => m.filter.SupplierName, new { placeholder = @Dnn.LocalizeString("SupplierName"),
+               data_val = "false", @class= "form-control submitAfterTyping" })
+                </div>
+                <div class="col-md-3">
+                    @Html.DropDownListFor(m => m.filter.ASLCategoryId, (IEnumerable<System.Web.Mvc.SelectListItem>
+        )ViewBag.ASLCategories, @Dnn.LocalizeString("ASLCategory"), new { data_val = "false", @class = "form-control submitOnChange" })
+                </div>
+                <div class="col-md-3">
+                    @Html.TextBoxFor(m => m.filter.ScopeOfService, new { placeholder = @Dnn.LocalizeString("ScopeOfService"), data_val = "false"
+               , @class = "form-control submitAfterTyping"
+               })
+                </div>
+                <div class="col-md-3">
+                    @Html.DropDownListFor(m => m.filter.IsActive, (IEnumerable<System.Web.Mvc.SelectListItem>
+        )ViewBag.IsActiveList, @Dnn.LocalizeString("IsActiveStatus"), new { data_val = "false", @class = "form-control submitOnChange" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    @Html.TextBoxFor(m => m.filter.ContactName, new { placeholder = @Dnn.LocalizeString("ContactName"), data_val = "false", @class = "form-control submitAfterTyping" })
+                </div>
+                <div class="col-md-3">
+                    @Html.TextBoxFor(m => m.filter.ContactEmail, new { placeholder = @Dnn.LocalizeString("ContactEmail"), data_val = "false", @class = "form-control submitAfterTyping" })
+                </div>
+                <div class="col-md-3">
+                    @Html.TextBoxFor(m => m.filter.ContactPhone, new { placeholder = @Dnn.LocalizeString("ContactPhone"), data_val = "false", @class = "form-control submitAfterTyping" })
+                </div>
+                <div class="col-md-3">
+                    @Html.DropDownListFor(m => m.filter.InitialEvaluationResultId, (IEnumerable<System.Web.Mvc.SelectListItem>)ViewBag.ReEvaluationResults, Dnn.LocalizeString("InitialEvaluationResult"),
+                   new { data_val = "false", @class = "form-control submitOnChange" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-2">
+                    @Html.TextBoxFor(m => m.filter.FilterInitialEvalFrom, new { placeholder = Dnn.LocalizeString("InitialEvaluationFrom"), @class = "input-date form-control submitAfterTyping" })
+                </div>
+                <div class="col-md-2">
+                    @Html.TextBoxFor(m => m.filter.FilterInitialEvalTo, new { placeholder = Dnn.LocalizeString("InitialEvaluationTo"), @class = "input-date form-control submitAfterTyping" })
+                </div>
+                <div class="col-md-2">
+                    @Html.TextBoxFor(m => m.filter.FilterReEvaluationFrom, new { placeholder = Dnn.LocalizeString("ReEvaluationFrom"), @class = "input-date form-control submitAfterTyping" })
+                </div>
+                <div class="col-md-3">
+                    @Html.TextBoxFor(m => m.filter.FilterReEvaluationTo, new { placeholder = Dnn.LocalizeString("ReEvaluationTo"), @class = "input-date form-control submitAfterTyping" })
+                </div>
+                <div class="col-md-3">
+                    @Html.DropDownListFor(m => m.filter.FilterReEvaluationBy, (IEnumerable<System.Web.Mvc.SelectListItem>
+         )ViewBag.Users
+         , Dnn.LocalizeString("ReEvaluationBy"), new { data_val = "false", @class = "form-control submitOnChange" })
+                </div>
+
+            </div>
+
+            @functions{
+                public string GetColClasses(string colName)
+                {
+                    string classes = "";
+                    if (Model.filter.FilterSortBy == colName)
+                    {
+                        if (Model.filter.FilterSortDirection == "ASC")
+                            classes += " headerSortUp";
+                        if (Model.filter.FilterSortDirection == "DESC")
+                            classes += " headerSortDown";
+                    }
+                    else
+                    {
+                        classes += " headerSortable";
+                    }
+                    return classes;
+                }
+            }
+
+        </div>
+        @if (Model.results.Count == 0)
+        {
+            <h3>No records</h3>
+        }
+        else
+        {
+            <div class="mt-10">
+                <div class="" id="tableContainer">
+
+                    <div class="col-xs-12 form-inline  table-responsive flexcroll">
+                        <div class="tableinfo">
+                            <div class="pull-left">
+                                <span>
+                                    @Dnn.LocalizeString("showing")
+                                </span>
+                                @Html.DropDownListFor(m => m.filter.FilterPageSize, (IEnumerable<System.Web.Mvc.SelectListItem>
+        )ViewBag.PageSize, new { data_val = "false", @class = "form-control submitOnChange inline" })
+                                <span>@Dnn.LocalizeString("of")</span> @Model.results.TotalCount
+                            </div>
+                            <div class="pull-right">
+
+                                <div class="right">
+                                    @if (Model.results.HasPreviousPage)
+                                    {
+                                        <a href="javascript:pageTable(@(Model.results.PageIndex - 1))"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                                    }
+                                    @Dnn.LocalizeString("PageOf").Replace("[PageIndex]", (@Model.results.PageIndex + 1).ToString()).Replace("[PageCount]", @Model.results.PageCount.ToString())
+                                    @if (Model.results.HasNextPage)
+                                    {
+                                        <a href="javascript:pageTable(@(Model.results.PageIndex + 1))"><span class="glyphicon glyphicon-chevron-right"></span></a>
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <table class="table table-bordered" id="tableSuppliers">
+                            <thead>
+                                <tr>
+                                    <th class="colHeader"></th>
+                                    <th scope="col">
+                                        <a class="colHeader @GetColClasses("SupplierName")" href="javascript:sortTable('SupplierName')">
+                                            <span class="thtitle">@Dnn.LocalizeString("SupplierName")</span>
+                                        </a>
+                                    </th>
+                                    <th class="colHeader @GetColClasses("ASLCategories")">
+                                        <a class="colHeader @GetColClasses("ASLCategories")" href="javascript:sortTable('ASLCategories')">
+                                            <span class="thtitle">@Dnn.LocalizeString("ASLCategories")</span>
+                                        </a>
+                                    </th>
+                                    <th class="colHeader @GetColClasses("ScopeOfService")">
+                                        <a class="colHeader @GetColClasses("ScopeOfService")" href="javascript:sortTable('ScopeOfService')">
+                                            <span class="thtitle">@Dnn.LocalizeString("ScopeOfService")</span>
+                                        </a>
+                                    </th>
+                                    <th class="colHeader @GetColClasses("IsActive")">
+                                        <a class="colHeader @GetColClasses("IsActive")" href="javascript:sortTable('IsActive')">
+                                            <span class="thtitle">@Dnn.LocalizeString("IsActive")</span>
+                                        </a>
+                                    </th>
+                                    <th class="colHeader @GetColClasses("ContactName")">
+                                        <a class="colHeader @GetColClasses("ContactName")" href="javascript:sortTable('ContactName')">
+                                            <span class="thtitle">@Dnn.LocalizeString("ContactName")</span>
+                                        </a>
+                                    </th>
+                                    <th class="colHeader @GetColClasses("InitialEvaluationDate")">
+                                        <a class="colHeader @GetColClasses("InitialEvaluationDate")" href="javascript:sortTable('InitialEvaluationDate')">
+                                            <span class="thtitle">@Dnn.LocalizeString("InitialEvaluationDate")</span>
+                                        </a>
+                                    </th>
+                                    <th class="colHeader @GetColClasses("LastEvaluationDate")">
+                                        <a class="colHeader @GetColClasses("LastEvaluationDate")" href="javascript:sortTable('LastEvaluationDate')">
+                                            <span class="thtitle">@Dnn.LocalizeString("LastEvaluationDate")</span>
+                                        </a>
+                                    </th>
+                                    <th class="colHeader @GetColClasses("Status")">
+                                        <a class="colHeader @GetColClasses("Status")" href="javascript:sortTable('Status')">
+                                            <span class="thtitle">@Dnn.LocalizeString("Status")</span>
+                                        </a>
+                                    </th>
+                                    <th class="colHeader @GetColClasses("NextEvaluationDate")">
+                                        <a class="colHeader @GetColClasses("NextEvaluationDate")" href="javascript:sortTable('NextEvaluationDate')">
+                                            <span class="thtitle">@Dnn.LocalizeString("NextEvaluationDate")</span>
+                                        </a>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var m in Model.results)
+                                {
+                                    <tr>
+                                        <td class="actionsButtons">
+                                            <a href="@Url.Action("Edit","ASL", new { ASLId = m.ASLId })"><span class="glyphicon glyphicon-edit"></span></a>
+                                            <a href="@Url.Action("Index","ASLReEvaluations", new { ParentASLId = m.ASLId })"><span class="glyphicon glyphicon-repeat"></span></a>
+                                            <a href="@Url.Action("Delete","ASL", new { ASLId = m.ASLId })"><span class="glyphicon glyphicon-remove"></span></a>
+                                        </td>
+                                        <td>@m.SupplierName</td>
+                                        <td>@m.CategoryName</td>
+                                        <td>@m.ScopeOfService</td>
+                                        <td>@m.IsActive</td>
+                                        <td>@m.ContactName</td>
+                                        <td><span class="format-date">@m.InitialEvaluationDate</span></td>
+                                        <td><span class="format-date">@m.LastReEvaluationDate</span></td>
+                                        <td>@m.Status</td>
+                                        <td><span class="format-date">@m.NextReEvaluationDate</span></td>
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+
